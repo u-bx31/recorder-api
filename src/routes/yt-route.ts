@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { getYt } from '../controllers/yt-controller';
+import { getAudio } from '../controllers/yt-controller';
 
 const router = Router();
 
-router.get('/yt', getYt);
+router.get('/yt/id=:id', getAudio);
 
 export default router;
