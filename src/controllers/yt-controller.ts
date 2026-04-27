@@ -2,7 +2,6 @@ import { spawn } from "child_process";
 import type { Request, Response } from "express";
 import { Readable } from "stream";
 
-
 /* -------------------- CONFIG -------------------- */
 const CACHE_TTL = 1000 * 60 * 30; // 30 min
 const MAX_CACHE_SIZE = 100;
@@ -58,7 +57,8 @@ function runYtDlp(url: string): Promise<any> {
 		proc.stderr.on("data", (c) => (error += c.toString()));
 
 		proc.on("close", (code) => {
-			if (code !== 0) return reject(new Error(error || "yt-dlp failed"));
+			if (code !== 0)
+				return reject(new Error(error || "yt-dlp failed"));
 			try {
 				resolve(JSON.parse(data));
 			} catch (e) {
@@ -131,7 +131,9 @@ export async function getAudio(req: Request, res: Response) {
 		});
 
 		if (!upstream.ok || !upstream.body) {
-			return res.status(upstream.status).json({ error: "Upstream failed" });
+			return res
+				.status(upstream.status)
+				.json({ error: "Upstream failed" });
 		}
 
 		/* ---------------- STREAM RESPONSE ---------------- */
@@ -155,7 +157,7 @@ export async function getAudio(req: Request, res: Response) {
 
 		// IMPORTANT: stream body
 		const nodeStream = Readable.fromWeb(upstream.body as any);
-nodeStream.pipe(res);
+		nodeStream.pipe(res);
 	} catch (err) {
 		console.error(err);
 		res.status(500).json({ error: "Internal server error" });
