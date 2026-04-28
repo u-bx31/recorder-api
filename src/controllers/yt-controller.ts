@@ -171,3 +171,67 @@ export function audioOptions(_req: Request, res: Response) {
 	res.setHeader("Access-Control-Allow-Headers", "*");
 	res.sendStatus(204);
 }
+
+
+/*
+export async function getAudio(req: Request, res: Response) {
+	// 1. SET CORS HEADERS IMMEDIATELY
+	res.setHeader("Access-Control-Allow-Origin", "*"); // Allow all origins
+	res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+	res.setHeader(
+		"Access-Control-Allow-Headers",
+		"Content-Type, Authorization",
+	);
+	res.setHeader(
+		"Access-Control-Expose-Headers",
+		"X-Title, X-Duration",
+	);
+
+	// 2. Handle the "Preflight" check
+	if (req.method === "OPTIONS") {
+		return res.sendStatus(204);
+	}
+	try {
+		const id = req.params.id as string;
+		if (!id || !isValidVideoId(id)) {
+			return res.status(400).json({ error: "Invalid ID" });
+		}
+		let data: any;
+		// Use the queue to run yt-dlp metadata extraction
+		data = await queue.run(async () => {
+			return new Promise((resolve, reject) => {
+				// -j: Get JSON metadata
+				// -g: Get the direct URL only
+				const proc = spawn("yt-dlp", [
+					"-j",
+					"-f",
+					"bestaudio",
+					`https://www.youtube.com/watch?v=${id}`,
+				]);
+
+				let output = "";
+				proc.stdout.on("data", (chunk) => (output += chunk));
+				proc.on("close", (code) => {
+					if (code !== 0) reject("yt-dlp failed");
+					try {
+						resolve(JSON.parse(output));
+					} catch (e) {
+						reject(e);
+					}
+				});
+			});
+		});
+
+		// Send the JSON "Receipt"
+		return res.json({
+			title: data.title,
+			duration: data.duration,
+			audioUrl: data.url, // This is the direct Google/YouTube CDN link
+			thumbnail: data.thumbnail,
+		});
+	} catch (err) {
+		res.status(500).json({ error: "Failed to fetch metadata" });
+	}
+}
+
+*/
