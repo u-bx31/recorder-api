@@ -1,8 +1,0 @@
-[phases.setup]
-nixPkgs = ['nodejs', 'python3', 'ffmpeg', 'yt-dlp']
-
-[phases.build]
-cmds = ['npm install', 'npm run build']
-
-[start]
-cmd = 'PATH=$PATH:/nix/var/nix/profiles/default/bin npm start'
